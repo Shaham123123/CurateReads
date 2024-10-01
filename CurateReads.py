@@ -10,9 +10,9 @@ Original file is located at
 import requests
 import re
 
-# Function to fetch book recommendations from Google Books API
+
 def recommend_books(query, start_index=0, max_results=5):
-    api_key = "AIzaSyBTUN2rpDiGhgvPHSECz0uIAEFTbn_I3I8"  # Replace with your actual API key
+    api_key = "AIzaSyBTUN2rpDiGhgvPHSECz0uIAEFTbn_I3I8"  
     url = f"https://www.googleapis.com/books/v1/volumes?q={query}&startIndex={start_index}&maxResults={max_results}&key={api_key}"
 
     response = requests.get(url)
@@ -21,7 +21,7 @@ def recommend_books(query, start_index=0, max_results=5):
     recommendations = []
 
     if 'items' in books:
-        for item in books['items']:  # Loop through returned books
+        for item in books['items']:  
             book = {
                 "title": item['volumeInfo'].get('title', 'No title available'),
                 "authors": item['volumeInfo'].get('authors', ['Unknown author']),
@@ -34,7 +34,7 @@ def recommend_books(query, start_index=0, max_results=5):
 
     return recommendations
 
-# Function to display book recommendations
+
 def display_recommendations(recommendations):
     if isinstance(recommendations, str):
         print(recommendations)
@@ -43,49 +43,48 @@ def display_recommendations(recommendations):
     for book in recommendations:
         print(f"Title: {book['title']}")
         print(f"Authors: {', '.join(book['authors'])}")
-        print(f"Description: {book['description'][:200]}...")  # Truncate long descriptions
+        print(f"Description: {book['description'][:200]}...")  
         print(f"Link: {book['link']}\n")
 
 
 
 
 
-# Main program loop
+
 def curate_reads_bot():
     print("Welcome to CurateReads, your personalized book recommendation bot!")
 
     while True:
         query = input("What kind of books are you looking for? (e.g., 'mystery by Agatha Christie' or just 'Agatha Christie') ")
-        author = extract_author(query)  # Check if an author is mentioned
+        author = extract_author(query)  
 
         if author:
-            # If the author is identified, query only for books by that author
+            
             print(f"Fetching all books by {author}...")
-            recommendations = recommend_books(f"author:{author}")  # Search for books by author
+            recommendations = recommend_books(f"author:{author}")  
             display_recommendations(recommendations)
         else:
-            # Proceed with the original query for genres/topics
-            start_index = 0  # Keeps track of the current starting point for fetching books
-            more = True  # Control whether to keep showing more books
+            start_index = 0  
+            more = True  
 
             while more:
-                # Fetch and display book recommendations
+                
                 recommendations = recommend_books(query, start_index=start_index)
                 display_recommendations(recommendations)
 
-                # Ask the user if they want more recommendations
+               
                 user_input = input("Do you want more recommendations? (yes/no): ").strip().lower()
 
                 if user_input == "yes":
-                    start_index += 5  # Increment the start index to fetch the next set of books
+                    start_index += 5  
                 else:
-                    more = False  # Exit the inner loop if the user doesn't want more recommendations
+                    more = False  
 
-        # After showing all recommendations or if the user says "no," ask for a new search
+    
         new_search = input("Do you want to search for another type of book? (yes/no): ").strip().lower()
         if new_search != "yes":
             print("Thank you for using CurateReads! Goodbye!")
-            break  # Exit the outer loop if the user doesn't want to search again
+            break 
 
 if __name__ == "__main__":
     curate_reads_bot()
